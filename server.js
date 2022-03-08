@@ -1,17 +1,35 @@
 import mongoose from 'mongoose'
+import env from 'dotenv';
 import express from 'express'
-import Products from './models/products_model.js'
+import bodyParser from 'body-parser';
+import authRoutes from './routes/auth.js '
+import categoryRoutes from './routes/category_routes.js '
+import adminRoutes from './routes/admin/auth.js '
+import productRoutes from './routes/product_route.js '
+import cartRoutes from './routes/cart_routes.js '
+import path from 'path';
+import cors from 'cors';
+
 // import Cors from 'cors'
 //App config
+env.config();
 const app= express();
 const port = process.env.PORT || 8001;
-const connection_url= "mongodb+srv://jamesons:wm6UOMyNvEo8jOhM@cluster0.hihlu.mongodb.net/canadadb?retryWrites=true&w=majority";
+const connection_url= `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0.hihlu.mongodb.net/canadadb?retryWrites=true&w=majority`;
 
 
 
 //Middlewares
+app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json());
+app.use('/public',express.static('uploadss'))
 // app.use(Cors());
+app.use('/api',authRoutes);
+app.use('/api',adminRoutes);
+app.use('/api',categoryRoutes);
+app.use('/api',productRoutes);
+app.use('/api',cartRoutes);
 
 
 //DB config
@@ -19,6 +37,7 @@ app.use(express.json());
 mongoose.connect(connection_url,{
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    
 })
 
 
